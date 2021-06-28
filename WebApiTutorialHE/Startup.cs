@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -11,8 +12,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WebApiTutorialHE.Data;
 
-namespace HylandEngineeringTutorial
+namespace WebApiTutorialHE
 {
     public class Startup
     {
@@ -30,7 +32,12 @@ namespace HylandEngineeringTutorial
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "HylandEngineeringTutorial", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApiTutorialHE", Version = "v1" });
+            });
+
+            services.AddDbContext<ProductContext>(options =>
+            {
+                options.UseMySQL(Configuration.GetConnectionString("DBConnection")); // found in appsettings.json
             });
         }
 
@@ -41,7 +48,7 @@ namespace HylandEngineeringTutorial
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "HylandEngineeringTutorial v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebApiTutorialHE v1"));
             }
 
             app.UseHttpsRedirection();
